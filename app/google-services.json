@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "305566881316",
+    "project_id": "rikiki-projlab",
+    "storage_bucket": "rikiki-projlab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305566881316:android:64bd9946ad8b30e510aab1",
+        "android_client_info": {
+          "package_name": "bme.projlab.rikiki"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRfiDHaQ3nHrPtLD25mCzz3ybPOY3jHbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
