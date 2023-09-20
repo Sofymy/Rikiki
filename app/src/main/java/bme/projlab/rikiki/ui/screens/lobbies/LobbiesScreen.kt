@@ -102,12 +102,12 @@ fun LobbyItem(lobbyViewModel: LobbiesViewModel, lobby: Lobby){
     Row(
         verticalAlignment = Alignment.CenterVertically
     ){
-        var pickerValueFirst by remember { mutableIntStateOf(0) }
+        var pickerValueFirst by remember { mutableIntStateOf(1) }
         var pickerValueSecond by remember { mutableIntStateOf(0) }
         var pickerValueThird by remember { mutableIntStateOf(0) }
         NumberPicker(
             value = pickerValueFirst,
-            range = 0..9,
+            range = 1..9,
             onValueChange = {
                 pickerValueFirst = it
             }

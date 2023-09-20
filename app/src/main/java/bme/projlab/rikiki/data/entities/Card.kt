@@ -13,7 +13,7 @@ enum class Card(val rank: Rank, val suit: Suit) {
     JACK_OF_SPADES(Rank.JACK, Suit.SPADES),
     QUEEN_OF_SPADES(Rank.QUEEN, Suit.SPADES),
     KING_OF_SPADES(Rank.KING, Suit.SPADES),
-    ACE_OF_SPADES(Rank.ACE, Suit.DIAMONDS);
+    ACE_OF_SPADES(Rank.ACE, Suit.SPADES);
 
     private val rankComparator = Comparator<Rank> { r1, r2 ->
         r1.value - r2.value

@@ -57,7 +57,7 @@ fun CreateLobbyScreen(
         Row{
             NumberPicker(
                 value = pickerValueFirst,
-                range = 0..9,
+                range = 1..9,
                 onValueChange = {
                     pickerValueFirst = it
                 }

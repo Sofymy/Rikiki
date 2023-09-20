@@ -6,7 +6,7 @@ import com.google.firebase.firestore.PropertyName
 data class Lobby(
     @get: PropertyName("owner") @set: PropertyName("owner") var owner: String = "",
     @get: PropertyName("count") @set: PropertyName("count") var count: Int = 3,
-    @get: PropertyName("code") @set: PropertyName("code") var code: Int = 100,
+    @get: PropertyName("code") @set: PropertyName("code") var code: String = "000",
     @get: PropertyName("players") @set: PropertyName("players") var players: ArrayList<String> = arrayListOf(owner),
     @get: PropertyName("status") @set: PropertyName("status") var status: Status = Status.WAIT
 

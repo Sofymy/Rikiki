@@ -6,9 +6,8 @@ import bme.projlab.rikiki.domain.responses.ResourceResponse
 import kotlinx.coroutines.flow.Flow
 
 interface BaseGameRepository {
-    fun getCard()
     fun getGame(owner: String?): Flow<ResourceResponse<Game>>
-    fun addCards(game: Game)
-    suspend fun placeBet(game: Game, bet: Int): GameResponse<Game>
+    fun dealCards(game: Game)
+    fun makeBid(game: Game, bid: Int)
     fun endRound(game: Game)
 }

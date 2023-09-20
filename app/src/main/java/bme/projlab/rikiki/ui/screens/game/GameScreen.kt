@@ -1,5 +1,6 @@
 package bme.projlab.rikiki.ui.screens.game
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -53,11 +54,22 @@ fun GameScreen(
     gameViewModel.getGame(owner)
 
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    var allBetsPlaced by remember { mutableStateOf(false) }
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
-    var betButton by remember { mutableStateOf(true) }
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    var allBetsPlaced by remember {
+        mutableStateOf(false)
+    }
+    var sliderPosition by remember {
+        mutableFloatStateOf(0f)
+    }
+    var buttonBid by remember {
+        mutableStateOf(true)
+    }
+    var cardFace by remember {
+        mutableStateOf(CardFace.Back)
+    }
+    var user = Firebase.auth.currentUser?.displayName
 
     LaunchedEffect(gameResponse.value){
         when(gameResponse.value){
@@ -80,13 +92,18 @@ fun GameScreen(
                     ,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    if(!hand.containsKey(Firebase.auth.currentUser?.displayName))
-                        Text(hand.toString())
+                    if(hand.player != user){
+                        Text(hand.player)
+                        Text(hand.cards.toString())
+                    }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
             }
         }
-        Button(onClick = { gameViewModel.addCards(game) }) {
+        Button(onClick = {
+            gameViewModel.dealCards(game)
+            buttonBid = true
+        }) {
             Text("add")
         }
         Column {
@@ -98,20 +115,16 @@ fun GameScreen(
             )
             Text(text = sliderPosition.toInt().toString())
             Button(onClick = {
-                gameViewModel.placeBet(game, sliderPosition.toInt())
-                betButton = false
-            }, enabled = betButton) {
-                Text("bet")
+                gameViewModel.makeBid(game, sliderPosition.toInt())
+                buttonBid = false
+            }, enabled = buttonBid) {
+                Text("Bid")
             }
 
-
-            var cardFace by remember {
-                mutableStateOf(CardFace.Back)
-            }
-
-            if(game.bets.size == game.players.size-1){
-                Text(text = game.bets.toString())
-                gameViewModel.endRound(game)
+            if(game.round > 1 && game.bids.size == game.players.size-1){
+                Text(text = game.bids.toString())
+                Text(text = game.hands.toString())
+                //gameViewModel.endRound(game)
                 cardFace = cardFace.next
             }
 

@@ -23,7 +23,11 @@ class LobbiesRepository: BaseLobbiesRepository {
         return try{
             val db = Firebase.firestore
             val username = Firebase.auth.currentUser?.displayName
-            val lobbyData = username?.let { Lobby(it, count, code.toInt()) }
+            val lobbyData = username?.let {
+                Lobby(owner = it,
+                    count= count,
+                    code = code)
+            }
             if (lobbyData != null) {
                 db.collection("lobbies")
                     .document(username)
@@ -141,12 +145,10 @@ class LobbiesRepository: BaseLobbiesRepository {
             }
             val db = Firebase.firestore
             val username = Firebase.auth.currentUser?.displayName
-            val bets = arrayListOf<Map<String, Int>>()
             val gameData = username?.let {
-                Game(it,
+                Game(
+                    owner = it,
                     players = lobby.players,
-                    hands = arrayListOf(),
-                    bets = bets
                 )
             }
             if (username != null && gameData != null) {

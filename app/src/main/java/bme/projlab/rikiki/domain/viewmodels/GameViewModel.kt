@@ -46,16 +46,13 @@ class GameViewModel @Inject constructor(
         }
     }
 
-    fun addCards(game: Game) {
-        gameRepository.addCards(game)
+    fun dealCards(game: Game) {
+        gameRepository.dealCards(game)
     }
 
-    fun placeBet(game: Game, bet: Int) = viewModelScope
-        .launch {
-            _gameFlow.value = GameResponse.Loading()
-            val response = gameRepository.placeBet(game, bet)
-            _gameFlow.value = response
-        }
+    fun makeBid(game: Game, bet: Int){
+        gameRepository.makeBid(game, bet)
+    }
 
     fun endRound(game: Game) = viewModelScope
         .launch {
