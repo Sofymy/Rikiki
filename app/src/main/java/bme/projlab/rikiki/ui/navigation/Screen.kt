@@ -18,4 +18,6 @@ sealed class Screen(val route: String) {
     //Others
     object SettingsScreen: Screen(route = "settings")
     object CreateLobbyScreen: Screen(route = "create_lobby")
+    object LobbyScreen: Screen(route = "lobby")
+    object MyLobbyScreen: Screen(route = "my_lobby")
 }

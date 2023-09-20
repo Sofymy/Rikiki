@@ -1,4 +1,4 @@
-package bme.projlab.rikiki.data
+package bme.projlab.rikiki.data.repositories
 
 import bme.projlab.rikiki.domain.base.BaseRulesRepository
 

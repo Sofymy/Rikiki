@@ -1,12 +1,14 @@
 package bme.projlab.rikiki.di
 
-import bme.projlab.rikiki.data.AuthRepository
+import bme.projlab.rikiki.data.repositories.AuthRepository
+import bme.projlab.rikiki.data.repositories.GameRepository
 import bme.projlab.rikiki.domain.base.BaseAuthRepository
 import bme.projlab.rikiki.domain.base.BaseAuthenticator
-import bme.projlab.rikiki.data.FirebaseAuthenticator
-import bme.projlab.rikiki.data.LobbiesRepository
-import bme.projlab.rikiki.data.ProfileRepository
-import bme.projlab.rikiki.data.RulesRepository
+import bme.projlab.rikiki.data.utils.FirebaseAuthenticator
+import bme.projlab.rikiki.data.repositories.LobbiesRepository
+import bme.projlab.rikiki.data.repositories.ProfileRepository
+import bme.projlab.rikiki.data.repositories.RulesRepository
+import bme.projlab.rikiki.domain.base.BaseGameRepository
 import bme.projlab.rikiki.domain.base.BaseLobbiesRepository
 import bme.projlab.rikiki.domain.base.BaseProfileRepository
 import bme.projlab.rikiki.domain.base.BaseRulesRepository
@@ -48,5 +50,11 @@ object HiltModule {
     @Provides
     fun provideRulesRepository(): BaseRulesRepository {
         return RulesRepository()
+    }
+
+    @Singleton
+    @Provides
+    fun provideGameRepository(): BaseGameRepository {
+        return GameRepository()
     }
 }

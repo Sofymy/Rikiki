@@ -1,12 +1,12 @@
-package bme.projlab.rikiki.data
+package bme.projlab.rikiki.data.utils
 
-import android.util.Log
 import bme.projlab.rikiki.domain.base.BaseAuthenticator
 import bme.projlab.rikiki.domain.responses.LoginResponse
 import bme.projlab.rikiki.domain.responses.SignupResponse
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
@@ -16,7 +16,18 @@ class FirebaseAuthenticator: BaseAuthenticator {
                                                         password: String): SignupResponse<FirebaseUser> {
         return try {
             val result = Firebase.auth.createUserWithEmailAndPassword(email, password).await()
-            result.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())?.await()
+            val db = Firebase.firestore
+            val user = result.user
+            user?.updateProfile(UserProfileChangeRequest
+                .Builder()
+                .setDisplayName(username)
+                .build())
+                ?.await()
+            user?.let {
+                db.collection("users").document(it.uid)
+                .update("username", username)
+                .await()
+            }
             SignupResponse.Success(result.user!!)
         } catch (e: Exception) {
             SignupResponse.Failure(e)

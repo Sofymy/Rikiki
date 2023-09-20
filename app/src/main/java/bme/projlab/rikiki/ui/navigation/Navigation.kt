@@ -15,6 +15,8 @@ import bme.projlab.rikiki.ui.screens.authentication.SignupScreen
 import bme.projlab.rikiki.ui.screens.authentication.WelcomeScreen
 import bme.projlab.rikiki.ui.screens.game.GameScreen
 import bme.projlab.rikiki.ui.screens.lobbies.CreateLobbyScreen
+import bme.projlab.rikiki.ui.screens.lobbies.LobbyScreen
+import bme.projlab.rikiki.ui.screens.lobbies.MyLobbyScreen
 import bme.projlab.rikiki.ui.screens.profile.SettingsScreen
 
 const val LOGGED_OUT_GRAPH_ROUTE = "loggedout"
@@ -88,13 +90,18 @@ fun NavGraphBuilder.loggedInNavGraph(
             HomeScreen()
         }
         composable(Screen.LobbiesScreen.route) {
-            LobbiesScreen(
-                navigateToCreateLobby = {
-                    navController.navigate(Screen.CreateLobbyScreen.route) },
-                navigateToGame = {
-                    navController.navigate(Screen.GameScreen.route)
-                }
-            )
+            EnterAnimation {
+                LobbiesScreen(
+                    navigateToCreateLobby = {
+                        navController.navigate(Screen.CreateLobbyScreen.route) },
+                    navigateToGame = {
+                        navController.navigate(Screen.GameScreen.route)
+                    },
+                    navigateToLobby = { owner ->
+                        navController.navigate("${Screen.LobbyScreen.route}/$owner")
+                    }
+                )
+            }
         }
         composable(Screen.RulesScreen.route) {
             RulesScreen()
@@ -118,10 +125,40 @@ fun NavGraphBuilder.loggedInNavGraph(
             )
         }
         composable(Screen.CreateLobbyScreen.route) {
-            CreateLobbyScreen()
+            EnterAnimation {
+                CreateLobbyScreen(
+                    navigateToMyLobby = {
+                        navController.navigate(Screen.MyLobbyScreen.route)
+                    }
+                )
+            }
         }
-        composable(Screen.GameScreen.route) {
-            GameScreen()
+        composable("${Screen.LobbyScreen.route}/{owner}")
+        {backStackEntry ->
+            LobbyScreen(backStackEntry.arguments?.getString("owner"),
+                navigateToLobbies = {
+                    navController.navigate(Screen.LobbiesScreen.route){
+                        popUpTo(LOGGED_IN_GRAPH_ROUTE){
+                            inclusive = true
+                        }
+                    }
+                },
+                navigateToGame = { owner ->
+                    navController.navigate("${Screen.GameScreen.route}/$owner")
+                })
+        }
+        composable("${Screen.GameScreen.route}/{owner}") {backStackEntry->
+            GameScreen(owner = backStackEntry.arguments?.getString("owner"))
+        }
+        composable(Screen.MyLobbyScreen.route) {
+            MyLobbyScreen(
+                navigateToLobbies = {
+                    navController.navigate(Screen.LobbiesScreen.route)
+                },
+                navigateToGame = { owner ->
+                    navController.navigate("${Screen.GameScreen.route}/$owner")
+                }
+            )
         }
     }
 }
