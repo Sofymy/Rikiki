@@ -1,4 +1,4 @@
-package bme.projlab.rikiki.data.entities
+package bme.projlab.rikiki.data.entities.game
 
 import bme.projlab.rikiki.data.entities.cards.Card
 import com.google.firebase.firestore.PropertyName

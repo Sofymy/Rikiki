@@ -1,7 +1,6 @@
 package bme.projlab.rikiki.data.repositories
 
-import android.util.Log
-import bme.projlab.rikiki.data.entities.Game
+import bme.projlab.rikiki.data.entities.game.Game
 import bme.projlab.rikiki.data.entities.Lobby
 import bme.projlab.rikiki.data.utils.Status
 import bme.projlab.rikiki.domain.base.BaseLobbiesRepository

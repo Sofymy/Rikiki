@@ -76,7 +76,7 @@ fun ProfileScreen(
                             .background(Color.Gray)
                             .padding(10.dp, 2.dp)
                     ){
-                        Text("${profile.statistics.points} games")
+                        Text("${profile.statistics.games} games")
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     Box(

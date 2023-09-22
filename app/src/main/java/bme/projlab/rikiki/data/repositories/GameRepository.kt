@@ -1,11 +1,12 @@
 package bme.projlab.rikiki.data.repositories
 
-import bme.projlab.rikiki.data.entities.Bid
+import bme.projlab.rikiki.data.entities.game.Bid
 import bme.projlab.rikiki.data.entities.cards.Card
-import bme.projlab.rikiki.data.entities.Game
-import bme.projlab.rikiki.data.entities.Hand
-import bme.projlab.rikiki.data.entities.Leader
-import bme.projlab.rikiki.data.entities.Points
+import bme.projlab.rikiki.data.entities.game.Game
+import bme.projlab.rikiki.data.entities.game.Hand
+import bme.projlab.rikiki.data.entities.game.Leader
+import bme.projlab.rikiki.data.entities.game.Points
+import bme.projlab.rikiki.data.entities.game.RoundPoint
 import bme.projlab.rikiki.domain.base.BaseGameRepository
 import bme.projlab.rikiki.domain.responses.ResourceResponse
 import com.google.firebase.auth.ktx.auth
@@ -145,11 +146,11 @@ class GameRepository: BaseGameRepository {
         val points = arrayListOf<Points>()
         for (bid in bids){
             val diff = kotlin.math.abs(bid.bid - bid.took)
-            if(diff == 0){
-                points.add(Points(bid.player,10+bid.bid*2))
-            }
-            else
-                points.add(Points(bid.player, -diff*2))
+            val player = bid.player
+            val roundPoint = if(diff ==0) RoundPoint(game.round,10+bid.bid*2 ) else RoundPoint(game.round,-diff*2)
+            val roundPoints = arrayListOf<RoundPoint>()
+            roundPoints.add(roundPoint)
+            points.add(Points(player,roundPoints = roundPoints))
         }
         game.owner.let {
             gameRef
