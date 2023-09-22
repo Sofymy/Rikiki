@@ -103,6 +103,9 @@ dependencies {
     // Needed for createAndroidComposeRule, but not createComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
 
+    //change status bar color
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+
 }
 
 // Allow references to generated code

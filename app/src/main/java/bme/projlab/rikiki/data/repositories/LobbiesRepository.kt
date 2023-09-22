@@ -1,7 +1,6 @@
 package bme.projlab.rikiki.data.repositories
 
 import android.util.Log
-import bme.projlab.rikiki.data.entities.Card
 import bme.projlab.rikiki.data.entities.Game
 import bme.projlab.rikiki.data.entities.Lobby
 import bme.projlab.rikiki.data.utils.Status
@@ -19,36 +18,15 @@ import kotlinx.coroutines.tasks.await
 
 class LobbiesRepository: BaseLobbiesRepository {
 
-    override suspend fun createLobby(count: Int, code: String): LobbiesResponse<Lobby> {
-        return try{
-            val db = Firebase.firestore
-            val username = Firebase.auth.currentUser?.displayName
-            val lobbyData = username?.let {
-                Lobby(owner = it,
-                    count= count,
-                    code = code)
-            }
-            if (lobbyData != null) {
-                db.collection("lobbies")
-                    .document(username)
-                    .set(lobbyData)
-                    .await()
-            }
-            LobbiesResponse.Creating()
-        }catch (e: Exception){
-            LobbiesResponse.Error(e.message.toString())
-        }
-    }
+    private val lobbiesRef = Firebase.firestore.collection("lobbies")
 
     override fun getLobbies(): Flow<ResourceResponse<List<Lobby>>> = callbackFlow {
-        val docRef = Firebase.firestore.collection("lobbies")
-        val listener =  docRef.addSnapshotListener { snapshot, e ->
+        val listener =  lobbiesRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 return@addSnapshotListener
             }
             if (snapshot != null) {
                 val lobbies= snapshot.toObjects(Lobby::class.java)
-                Log.d("lobbbies", lobbies.toString())
                 trySend(ResourceResponse.Success(data = lobbies)).isSuccess
             }
         }
@@ -60,7 +38,7 @@ class LobbiesRepository: BaseLobbiesRepository {
     }
 
     override fun getLobby(owner: String): Flow<ResourceResponse<Lobby>> = callbackFlow {
-        val docRef = Firebase.firestore.collection("lobbies").document(owner)
+        val docRef = lobbiesRef.document(owner)
         val listener = docRef.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     return@addSnapshotListener
@@ -80,7 +58,7 @@ class LobbiesRepository: BaseLobbiesRepository {
 
     override fun getLobby(): Flow<ResourceResponse<Lobby>> = callbackFlow {
         val docRef = Firebase.auth.currentUser?.displayName?.let {
-            Firebase.firestore.collection("lobbies").document(
+            lobbiesRef.document(
                 it
             )
         }
@@ -99,9 +77,28 @@ class LobbiesRepository: BaseLobbiesRepository {
         }
     }
 
+    override suspend fun createLobby(count: Int, code: String): LobbiesResponse<Lobby> {
+        return try{
+            val username = Firebase.auth.currentUser?.displayName
+            val lobbyData = username?.let {
+                Lobby(owner = it,
+                    count= count,
+                    code = code)
+            }
+            if (lobbyData != null) {
+                lobbiesRef
+                    .document(username)
+                    .set(lobbyData)
+                    .await()
+            }
+            LobbiesResponse.Creating()
+        }catch (e: Exception){
+            LobbiesResponse.Error(e.message.toString())
+        }
+    }
+
     override fun onPauseLobby() {
         try{
-            val lobbiesRef = Firebase.firestore.collection("lobbies")
             Firebase.auth.currentUser?.displayName?.let {
                 lobbiesRef
                     .document(it)
@@ -114,7 +111,6 @@ class LobbiesRepository: BaseLobbiesRepository {
 
     override suspend fun deleteLobby(): LobbiesResponse<Lobby> {
         return try{
-            val lobbiesRef = Firebase.firestore.collection("lobbies")
             Firebase.auth.currentUser?.displayName?.let {
                 lobbiesRef
                     .document(it)
@@ -136,7 +132,6 @@ class LobbiesRepository: BaseLobbiesRepository {
 
     override suspend fun startGame(lobby: Lobby): LobbiesResponse<Lobby> {
         return try {
-            val lobbiesRef = Firebase.firestore.collection("lobbies")
             Firebase.auth.currentUser?.displayName?.let {
                 lobbiesRef
                     .document(it)
@@ -165,10 +160,9 @@ class LobbiesRepository: BaseLobbiesRepository {
 
     override suspend fun joinLobby(lobby: Lobby, code: String): LobbiesResponse<Lobby> {
         return try {
-            val lobbiesRef = Firebase.firestore.collection("lobbies")
             val correctCode = lobbiesRef.document(lobby.owner).get().await().toObject(Lobby::class.java)
             if (correctCode != null) {
-                if(code != correctCode.code.toString()){
+                if(code != correctCode.code){
                     return LobbiesResponse.Error("", lobby)
                 }
             }
@@ -184,7 +178,6 @@ class LobbiesRepository: BaseLobbiesRepository {
 
     override suspend fun leaveLobby(lobby: Lobby): LobbiesResponse<Lobby> {
         return try{
-            val lobbiesRef = Firebase.firestore.collection("lobbies")
             lobbiesRef
                 .document(lobby.owner)
                 .update("players", FieldValue.arrayRemove(Firebase.auth.currentUser?.displayName ?: "n/a"))

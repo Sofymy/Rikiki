@@ -15,19 +15,16 @@ class FirebaseAuthenticator: BaseAuthenticator {
                                                         email: String,
                                                         password: String): SignupResponse<FirebaseUser> {
         return try {
-            val result = Firebase.auth.createUserWithEmailAndPassword(email, password).await()
-            val db = Firebase.firestore
+            val result = Firebase
+                .auth
+                .createUserWithEmailAndPassword(email, password)
+                .await()
             val user = result.user
             user?.updateProfile(UserProfileChangeRequest
                 .Builder()
                 .setDisplayName(username)
                 .build())
                 ?.await()
-            user?.let {
-                db.collection("users").document(it.uid)
-                .update("username", username)
-                .await()
-            }
             SignupResponse.Success(result.user!!)
         } catch (e: Exception) {
             SignupResponse.Failure(e)
@@ -37,7 +34,16 @@ class FirebaseAuthenticator: BaseAuthenticator {
     override suspend fun signInWithEmailAndPassword(email: String,
                                                     password: String): LoginResponse<FirebaseUser> {
         return try {
-            val result = Firebase.auth.signInWithEmailAndPassword(email, password).await()
+            val result = Firebase.auth.signInWithEmailAndPassword(email, password)
+                .await()
+            val db = Firebase.firestore
+            val user = result.user
+            //Set username
+            //NodeJS has a latency when creating documents
+            user?.let {
+                db.collection("users").document(it.uid)
+                    .update("username", user.displayName)
+            }
             LoginResponse.Success(result.user!!)
         } catch (e: Exception) {
             LoginResponse.Failure(e)

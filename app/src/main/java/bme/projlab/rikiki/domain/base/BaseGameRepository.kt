@@ -9,5 +9,4 @@ interface BaseGameRepository {
     fun getGame(owner: String?): Flow<ResourceResponse<Game>>
     fun dealCards(game: Game)
     fun makeBid(game: Game, bid: Int)
-    fun endRound(game: Game)
 }

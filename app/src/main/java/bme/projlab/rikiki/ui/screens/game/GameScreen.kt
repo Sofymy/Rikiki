@@ -1,6 +1,5 @@
 package bme.projlab.rikiki.ui.screens.game
 
-import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -20,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +39,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bme.projlab.rikiki.R
-import bme.projlab.rikiki.domain.responses.GameResponse
 import bme.projlab.rikiki.domain.viewmodels.GameViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -66,6 +65,9 @@ fun GameScreen(
     var buttonBid by remember {
         mutableStateOf(true)
     }
+    var endRound by remember {
+        mutableStateOf(false)
+    }
     var cardFace by remember {
         mutableStateOf(CardFace.Back)
     }
@@ -73,16 +75,13 @@ fun GameScreen(
 
     LaunchedEffect(gameResponse.value){
         when(gameResponse.value){
-            is GameResponse.Betting -> {
-
-            }
             else -> {}
         }
     }
 
     Column {
         Text(text = game.trump.toString())
-        LazyColumn(){
+        LazyColumn {
             items(game.hands) { hand ->
                 Column(
                     modifier = Modifier
@@ -103,6 +102,7 @@ fun GameScreen(
         Button(onClick = {
             gameViewModel.dealCards(game)
             buttonBid = true
+            endRound = false
         }) {
             Text("add")
         }
@@ -121,13 +121,6 @@ fun GameScreen(
                 Text("Bid")
             }
 
-            if(game.round > 1 && game.bids.size == game.players.size-1){
-                Text(text = game.bids.toString())
-                Text(text = game.hands.toString())
-                //gameViewModel.endRound(game)
-                cardFace = cardFace.next
-            }
-
             FlipCard(
                 cardFace = cardFace,
                 onClick = {  },
@@ -142,6 +135,7 @@ fun GameScreen(
                 },
             )
         }
+        SnackbarHost(hostState = snackbarHostState)
     }
 
 }

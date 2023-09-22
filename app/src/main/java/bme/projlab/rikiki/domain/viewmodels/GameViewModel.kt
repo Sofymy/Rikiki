@@ -1,5 +1,6 @@
 package bme.projlab.rikiki.domain.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -50,12 +51,7 @@ class GameViewModel @Inject constructor(
         gameRepository.dealCards(game)
     }
 
-    fun makeBid(game: Game, bet: Int){
-        gameRepository.makeBid(game, bet)
+    fun makeBid(game: Game, bid: Int){
+        gameRepository.makeBid(game, bid)
     }
-
-    fun endRound(game: Game) = viewModelScope
-        .launch {
-            gameRepository.endRound(game)
-        }
 }

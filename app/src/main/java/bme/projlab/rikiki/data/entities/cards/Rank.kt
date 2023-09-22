@@ -1,4 +1,4 @@
-package bme.projlab.rikiki.data.entities
+package bme.projlab.rikiki.data.entities.cards
 
 enum class Rank(val value: Int) {
     TWO(2),

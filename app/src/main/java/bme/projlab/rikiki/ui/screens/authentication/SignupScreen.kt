@@ -94,7 +94,10 @@ fun SignupScreen(
             }
             is SignupResponse.Failure -> {
                 scope.launch {
-                    snackbarHostState.showSnackbar("Error message")
+                    (signupResponse.value as SignupResponse.Failure).exception.message?.let {
+                        snackbarHostState
+                            .showSnackbar(it)
+                    }
                 }
             }
             is SignupResponse.Loading -> {

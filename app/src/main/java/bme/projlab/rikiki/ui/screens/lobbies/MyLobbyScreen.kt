@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -64,7 +65,14 @@ fun MyLobbyScreen(
             else -> {}
         }
     }
-    Column {
+    Column(
+        modifier = Modifier.padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("My lobby",
+            modifier = Modifier
+        )
+        Spacer(modifier = Modifier.height(20.dp))
         Text(text = "My lobby")
         LazyColumn {
             items(lobby.players) { player ->
@@ -85,7 +93,7 @@ fun MyLobbyScreen(
             mutableStateOf(false)
         }
         Text(text = "Your room")
-        Text(text = "${lobby.code}")
+        Text(text = lobby.code)
         Text(text = "Room for ${lobby.count} players")
         Text(text = "${lobby.count-lobby.players.size} players needed")
         isEnabled = lobby.players.size >= 3

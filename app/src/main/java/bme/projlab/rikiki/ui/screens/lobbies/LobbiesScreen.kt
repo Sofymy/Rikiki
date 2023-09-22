@@ -47,6 +47,7 @@ fun LobbiesScreen(
     val lobbiesResponse = lobbyViewModel.lobbiesFlow.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(lobbiesResponse.value){
         when(lobbiesResponse.value){
             is LobbiesResponse.Error -> scope.launch {
@@ -65,8 +66,12 @@ fun LobbiesScreen(
         }
     }
     Column(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier.padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text("Lobbies",
+            modifier = Modifier)
+        Spacer(modifier = Modifier.height(20.dp))
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.testTag("responseSnackbar")

@@ -24,6 +24,9 @@ class LobbiesViewModel @Inject constructor(
     private val lobbiesRepository: BaseLobbiesRepository
 ): ViewModel(){
 
+    private var _lobbies = mutableStateOf<List<Lobby>>(emptyList())
+    val lobbies: State<List<Lobby>> = _lobbies
+
     private val _lobbiesFlow = MutableStateFlow<LobbiesResponse<Lobby>?>(null)
     val lobbiesFlow: MutableStateFlow<LobbiesResponse<Lobby>?> = _lobbiesFlow
 
@@ -37,6 +40,7 @@ class LobbiesViewModel @Inject constructor(
 
                     is ResourceResponse.Success -> {
                         _lobbies.value = resource.data!!
+
                     }
                 }
             }.launchIn(viewModelScope)
@@ -48,9 +52,6 @@ class LobbiesViewModel @Inject constructor(
             val response = lobbiesRepository.joinLobby(lobby, code)
             _lobbiesFlow.value = response
         }
-
-    private var _lobbies = mutableStateOf<List<Lobby>>(emptyList())
-    val lobbies: State<List<Lobby>> = _lobbies
 
 
 }
